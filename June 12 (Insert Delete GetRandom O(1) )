@@ -1,0 +1,76 @@
+/*Hashmap- insertion and deletion is O(1) but getRandom by its definition (get random index) wont work as map doesnt have
+indexing.
+List- insertion and getRandom using list.size() will work to generate random indices using o(1), but removal in arraylist
+will require elements to shift. However, deletion from the last postion is o(1).
+Use list to store values(inserted at end)
+Use map to store values and their indices
+
+For deletion, swap the last element with required number (from a lookup of the map):
+1. Find index in map
+2. In list swap value with the last
+3. Remove element from list and the map
+4. Update map with new index
+*/
+
+class RandomizedSet {
+
+    List<Integer> values;
+    Map<Integer,Integer> positions;
+    Random random;
+   
+    /** Initialize your data structure here. */
+    public RandomizedSet() {
+        values= new ArrayList<>();
+        positions = new HashMap<>();
+        random = new Random();
+       
+    }
+   
+    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+    public boolean insert(int val) {
+        if(positions.containsKey(val))
+            return false;
+       
+        values.add(val);
+        positions.put(val,values.size()-1); //adding element at the last of the list
+            return true;
+       
+    }
+   
+    /** Removes a value from the set. Returns true if the set contained the specified element. */
+    public boolean remove(int val) {
+       
+        if(!positions.containsKey(val))
+            return false;
+       
+        int index = positions.get(val); //get index from map, we know position in the list
+        int lastElement = values.get(values.size()-1); //get last element from list
+       
+        values.set(index,lastElement); //set last element at this position
+        positions.put(lastElement,index);
+       
+        values.remove(values.size()-1);
+        positions.remove(val);
+       
+        return true;
+       
+       
+    }
+   
+    /** Get a random element from the set. */
+    public int getRandom() {
+       
+        return values.get(random.nextInt(values.size())); //get random index using list.size
+        //between 0 to list size-1 and then get element at that position
+       
+    }
+}
+
+/**
+ * Your RandomizedSet object will be instantiated and called as such:
+ * RandomizedSet obj = new RandomizedSet();
+ * boolean param_1 = obj.insert(val);
+ * boolean param_2 = obj.remove(val);
+ * int param_3 = obj.getRandom();
+ */
+
